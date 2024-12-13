@@ -46,16 +46,16 @@ jobs:
           path: |
             target/surefire-reports/*.xml
             target/ExtentReport.html # Adjust this path if necessary
-      # Step 6: Send the Report via Email (using Outlook SMTP server)
-      - name: Send Test Report Email
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp-mail.outlook.com  # Outlook SMTP server
-          server_port: 587  # TLS port
-          username: ${{ secrets.OUTLOOK_USERNAME }}  # Outlook email address
-          password: ${{ secrets.OUTLOOK_APP_PASSWORD }}  # Outlook app password or regular password
-          from: ${{ secrets.OUTLOOK_USERNAME }}  # Sender's email address (same as username)
-          to: ${{ secrets.TO_EMAIL }}  # Recipient email (use secret for flexibility)
-          subject: "Test Report"
-          body: "Please find the attached test report."
-          attachments: target/ExtentReport.html  # Attach the report file (adjust if necessary)
+#      # Step 6: Send the Report via Email (using Outlook SMTP server)
+#      - name: Send Test Report Email
+#        uses: dawidd6/action-send-mail@v3
+#        with:
+#          server_address: smtp-mail.outlook.com  # Outlook SMTP server
+#          server_port: 587  # TLS port
+#          username: ${{ secrets.OUTLOOK_USERNAME }}  # Outlook email address
+#          password: ${{ secrets.OUTLOOK_APP_PASSWORD }}  # Outlook app password or regular password
+#          from: ${{ secrets.OUTLOOK_USERNAME }}  # Sender's email address (same as username)
+#          to: ${{ secrets.TO_EMAIL }}  # Recipient email (use secret for flexibility)
+#          subject: "Test Report"
+#          body: "Please find the attached test report."
+#          attachments: target/ExtentReport.html  # Attach the report file (adjust if necessary)
