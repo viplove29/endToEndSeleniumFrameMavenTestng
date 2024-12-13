@@ -1,0 +1,61 @@
+name: Run Selenium Tests
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  run-tests:
+    runs-on: windows-latest
+
+    steps:
+      # Step 1: Checkout repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Java environment
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11' # Use the JDK version required for your project
+
+      # Step 3: Cache Maven dependencies to speed up builds
+      - name: Cache Maven dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-m2-
+
+      # Step 4: Run Maven tests
+      - name: Run Maven Tests
+        run: mvn clean test
+
+      # Step 5: Upload Extent Reports (or other generated files) as artifacts
+      - name: Upload Test Reports
+        if: always() # Always run, even if tests fail
+        uses: actions/upload-artifact@v4
+        with:
+          name: Test-Reports
+          path: |
+            target/surefire-reports/*.xml
+            target/ExtentReport.html # Adjust this path if necessary
+      # Step 6: Send the Report via Email (using Outlook SMTP server)
+      - name: Send Test Report Email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp-mail.outlook.com  # Outlook SMTP server
+          server_port: 587  # TLS port
+          username: ${{ secrets.OUTLOOK_USERNAME }}  # Outlook email address
+          password: ${{ secrets.OUTLOOK_APP_PASSWORD }}  # Outlook app password or regular password
+          from: ${{ secrets.OUTLOOK_USERNAME }}  # Sender's email address (same as username)
+          to: ${{ secrets.TO_EMAIL }}  # Recipient email (use secret for flexibility)
+          subject: "Test Report"
+          body: "Please find the attached test report."
+          attachments: target/ExtentReport.html  # Attach the report file (adjust if necessary)
